@@ -16,6 +16,11 @@
     "type": "git",
     "url": "https://github.com/garris/htmlbars.git#bb_rendering"
   },
+  "files": [
+    "dist",
+    "README.md",
+    "package.json"
+  ],
   "author": "Tilde, Inc.",
   "license": "MIT",
   "readmeFilename": "README.md",
