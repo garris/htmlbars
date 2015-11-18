@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/garris/htmlbars"
+    "url": "https://github.com/garris/htmlbars.git#bb_rendering"
   },
   "author": "Tilde, Inc.",
   "license": "MIT",
