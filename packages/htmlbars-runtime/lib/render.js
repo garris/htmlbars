@@ -1,3 +1,5 @@
+import run from 'ember-metal/run_loop';
+
 import { visitChildren } from "../htmlbars-util/morph-utils";
 import ExpressionVisitor from "./node-visitor";
 import { AlwaysDirtyVisitor } from "./node-visitor";
@@ -196,7 +198,9 @@ RenderResult.prototype.initializeNodes = function(ownerNode) {
 RenderResult.prototype.render = function() {
   this.root.lastResult = this;
   this.root.rendered = true;
-  this.populateNodes(AlwaysDirtyVisitor);
+  run.schedule('render', () => {
+    this.populateNodes(AlwaysDirtyVisitor);
+  })
 
   if (this.shouldSetContent && this.root.setContent) {
     this.root.setContent(this.fragment);
@@ -223,7 +227,9 @@ RenderResult.prototype.revalidateWith = function(env, scope, self, blockArgument
   if (self !== undefined) { this.updateSelf(self); }
   if (blockArguments !== undefined) { this.updateLocals(blockArguments); }
 
-  this.populateNodes(visitor);
+  run.schedule('render', () => {
+    this.populateNodes(visitor);
+  });
 };
 
 RenderResult.prototype.destroy = function() {
@@ -242,6 +248,10 @@ RenderResult.prototype.populateNodes = function(visitor) {
   for (i=0, l=statements.length; i<l; i++) {
     var statement = statements[i];
     var morph = nodes[i];
+
+    // if (/inline|block|content/.test(statement[0])) {
+    //   console.log('populateNodes >', statement[0], statement[1], morph.contextualElement.className);
+    // }
 
     if (env.hooks.willRenderNode) {
       env.hooks.willRenderNode(morph, env, scope);
