@@ -14,16 +14,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/tildeio/htmlbars.git"
+    "url": "https://github.com/garris/htmlbars"
   },
   "author": "Tilde, Inc.",
   "license": "MIT",
   "readmeFilename": "README.md",
-  "files": [
-    "dist",
-    "README.md",
-    "package.json"
-  ],
   "dependencies": {},
   "devDependencies": {
     "benchmark": "^1.0.0",
