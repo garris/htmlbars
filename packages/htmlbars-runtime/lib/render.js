@@ -1,5 +1,5 @@
-import run from 'ember-metal/run_loop';
-import { renderFrameId } from 'ember-metal/utils';
+// import run from 'ember-metal/run_loop';
+// import { renderFrameId } from 'ember-metal/utils';
 
 import { visitChildren } from "../htmlbars-util/morph-utils";
 import ExpressionVisitor from "./node-visitor";
@@ -42,7 +42,7 @@ export function RenderOptions(renderNode, self, blockArguments, contextualElemen
 }
 
 function RenderResult(env, scope, options, rootNode, ownerNode, nodes, fragment, template, shouldSetContent) {
-  this.renderFrameId = renderFrameId;
+  // this.renderFrameId = renderFrameId;
 
   this.root = rootNode;
   this.fragment = fragment;
