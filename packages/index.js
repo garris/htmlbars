@@ -9,6 +9,9 @@ function getVersion() {
 function getRevision() {
   var gitPath      = path.join(__dirname, '..','.git');
   var headFilePath = path.join(gitPath, 'HEAD');
+  if (!fs.existsSync(headFilePath)) {
+    return "";
+  }
   var headFile     = fs.readFileSync(headFilePath, {encoding: 'utf8'});
   var branchName   = headFile.split('/').slice(-1)[0].trim();
   var refPath      = headFile.split(' ')[1];
