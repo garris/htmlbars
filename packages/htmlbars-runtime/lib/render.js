@@ -1,3 +1,6 @@
+// import run from 'ember-metal/run_loop';
+// import { renderFrameId } from 'ember-metal/utils';
+
 import { visitChildren } from "../htmlbars-util/morph-utils";
 import ExpressionVisitor from "./node-visitor";
 import { AlwaysDirtyVisitor } from "./node-visitor";
@@ -22,7 +25,11 @@ export default function render(template, env, scope, options) {
   dom.detectNamespace(contextualElement);
 
   var renderResult = RenderResult.build(env, scope, template, options, contextualElement);
-  renderResult.render();
+  if (options && options.renderNode) {
+    Ember.run.schedule('render', renderResult, 'render');
+  } else {
+    renderResult.render();
+  }
 
   return renderResult;
 }
@@ -35,6 +42,8 @@ export function RenderOptions(renderNode, self, blockArguments, contextualElemen
 }
 
 function RenderResult(env, scope, options, rootNode, ownerNode, nodes, fragment, template, shouldSetContent) {
+  // this.renderFrameId = renderFrameId;
+
   this.root = rootNode;
   this.fragment = fragment;
 
@@ -194,10 +203,14 @@ RenderResult.prototype.initializeNodes = function(ownerNode) {
 };
 
 RenderResult.prototype.render = function() {
+  // console.log('rendering >>>', renderFrameId, this)
+  // if (this.renderFrameId !== renderFrameId) {
+  //   console.log('**render_canceled**');
+  //   return;
+  // }
   this.root.lastResult = this;
   this.root.rendered = true;
   this.populateNodes(AlwaysDirtyVisitor);
-
   if (this.shouldSetContent && this.root.setContent) {
     this.root.setContent(this.fragment);
   }
@@ -223,7 +236,9 @@ RenderResult.prototype.revalidateWith = function(env, scope, self, blockArgument
   if (self !== undefined) { this.updateSelf(self); }
   if (blockArguments !== undefined) { this.updateLocals(blockArguments); }
 
-  this.populateNodes(visitor);
+  // run.schedule('render', () => {
+    this.populateNodes(visitor);
+  // });
 };
 
 RenderResult.prototype.destroy = function() {
@@ -242,6 +257,10 @@ RenderResult.prototype.populateNodes = function(visitor) {
   for (i=0, l=statements.length; i<l; i++) {
     var statement = statements[i];
     var morph = nodes[i];
+
+    // if (/inline|block|content/.test(statement[0])) {
+    //   console.log('populateNodes >', statement[0], statement[1], morph.contextualElement.className);
+    // }
 
     if (env.hooks.willRenderNode) {
       env.hooks.willRenderNode(morph, env, scope);
